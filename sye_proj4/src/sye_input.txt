@@ -1,6 +1,7 @@
-A	B 1
+A	Beta 1
 A D		2
-B 	C		4
+Beta 	C		4
 C 		D  2
-C E 			2
-D 	E  7
+C Echo 			2
+D 	Echo  7
+Banana C 3
