@@ -4,4 +4,4 @@ Beta 	C		4
 C 		D  2
 C Echo 			2
 D 	Echo  7
-Banana C 3
+Band C 3
