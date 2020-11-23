@@ -1,11 +1,10 @@
 /**
- *
  * @author sarahyaw
  */
 import java.util.*;
 import java.io.*;
 import java.util.Map.Entry;
-public class Router 
+public class sye_rmatrix 
 {
     //declare variables
     public static boolean hasInput=false, hasOutput=false;
@@ -122,10 +121,6 @@ public class Router
         //put those paths into an array
         paths = intake.split("-");
 
-        //displays input file V
-        //for(int i = 0; i<paths.length; i++)
-             //System.out.println(paths[i]);
-
         //make a list of all of the nodes
         nodeList="";
         for(int i=0; i<paths.length; i++)
@@ -162,7 +157,6 @@ public class Router
         String[] tempo = nodeList.split(" ");
         Arrays.sort(tempo);
         nodeList = String.join(" ",tempo);
-        //System.out.println(nodeList);
 
         //create & initialize matrix
         matrix = new String[tempo.length+1][tempo.length+1];
@@ -172,7 +166,6 @@ public class Router
         for(int i = 0; i<tempo.length; i++)
             matrix[i+1][0]=tempo[i];
         
-
         //place initial values into matrix
         for(int i = 0; i<paths.length; i++)
         {
@@ -193,18 +186,14 @@ public class Router
                         if(onePath[0].equals(matrix[0][k]))
                             matrix[j][k]=onePath[0]+","+onePath[2];
         }
-//dijkstra for every node
+        //dijkstra for every node
         for(int i = 0; i<tempo.length; i++)
-        {
             dijkstra(tempo[i]);
-            //dijkstra("A");
-            System.out.println("------------------------------------------------------------------");
-        }
         
         for(int i=0; i<tempo.length; i++)
             matrix[i+1][i+1]="-";
 
-        //display matrix
+        //display matrix on screen
         for(int i = 0; i<matrix[0].length; i++)
         {
             for(int j = 0; j<matrix[0].length; j++)
@@ -218,30 +207,50 @@ public class Router
                 if(i>=1&&j==0)
                     System.out.print(" "+matrix[i][j]+"\t|");
                 else
-                    System.out.print(" "+matrix[i][j]+"\t");
+                    if(matrix[i][j].length()>=6)
+                        System.out.print(matrix[i][j]+"\t");
+                    else
+                        System.out.print(matrix[i][j]+" \t");
             }
             System.out.println("");
         }
-        
+        //write matrix to file
         try
         {
-            out.write("hi");
-            out.flush();
+            for(int i = 0; i<matrix[0].length; i++)
+            {
+                for(int j = 0; j<matrix[0].length; j++)
+                {
+                    if(i==1&&j==0)
+                    {
+                        for(int k=0; k<tempo.length;k++)
+                            out.write("-----------");
+                        out.flush();
+                        out.write("\n");
+                        out.flush();
+                    }  
+                    if(i>=1&&j==0)
+                        out.write(" "+matrix[i][j]+"\t|");
+                    else
+                        if(matrix[i][j].length()>=6)
+                            out.write(matrix[i][j]+"\t");
+                        else
+                            out.write(matrix[i][j]+" \t");
+                }
+                out.write("\n");
+                out.flush();
+            }
             out.close();
         }
         catch(Exception e){e.printStackTrace();}
 
-        System.out.println("\nAll Done----------------------------------------------------------");
     }
     public static void dijkstra(String startNode)
     {   //help here from baeldung-> https://www.baeldung.com/java-dijkstra
         String[] no = nodeList.split(" ");
         Set<node> unsettled = new HashSet<node> ();
-        //Queue<node> temp = new LinkedList<node> ();
         Set<node> settled =new HashSet<node> ();
         int index=0;
-
-        System.out.println("Node: "+startNode);
 
         //set all costs to infinity
         for(int i = 0; i<no.length; i++)
@@ -249,19 +258,18 @@ public class Router
             node n;
             node s;
             if(no[i].equals(startNode))
-            {
+            {   //start node must be picked first
                 s=new node(no[i]);
                 s.distance=0;
                 s.predecessor=no[i];
                 for(int j = 0; j<paths.length; j++)
-                {
+                {   //Add adjacencies
                     String[] onePath = paths[j].split(" ");
                     if(s.name.equals(onePath[0]))
                         s.addNode(new node(onePath[1]),Integer.parseInt(onePath[2]));
                     else if (s.name.equals(onePath[1]))
                         s.addNode(new node(onePath[0]),Integer.parseInt(onePath[2]));
                 }
-                System.out.println("added "+s.name+" "+s.distance);
                 s.path.add(s);
                 unsettled.add(s);
             }
@@ -272,89 +280,60 @@ public class Router
                 n.predecessor=null;
                 n.path.add(n);
                 for(int j = 0; j<paths.length; j++)
-                {
+                {   //add adjacencies
                     String[] onePath = paths[j].split(" ");
                     if(n.name.equals(onePath[0]))
                         n.addNode(new node(onePath[1]),Integer.parseInt(onePath[2]));
                     else if (n.name.equals(onePath[1]))
                         n.addNode(new node(onePath[0]),Integer.parseInt(onePath[2]));
                 }
-                System.out.println("added "+n.name+" "+n.distance);
-                for(Entry<node,Integer> adjPair: n.adjacentTo.entrySet())
-                {
-                    System.out.println(" "+adjPair.getKey().name+" "+adjPair.getValue());
-                }
                 unsettled.add(n);
             }
         }
-            System.out.println("----------------------------------------------");
-
-        
-
 
         while(unsettled.size()!=0)
         {
             node eval = getClosest(unsettled);
-            System.out.println("Evaluating "+eval.name);
-
             unsettled.remove(eval);
             for(Entry <node, Integer> adjPair: eval.adjacentTo.entrySet())
             {            
-                System.out.println("Adjacent node: "+adjPair.getKey().name+" "+adjPair.getValue());
-
                 node adjNode = adjPair.getKey();
                 int dist = adjPair.getValue();
 
                 boolean flag=false;
-                for(node sett:settled)
-                {
-                    System.out.println(sett.name+" v "+adjNode.name);
+                for(node sett:settled)  //if the node has been used set a flag to not use it
                     if(sett.name.equals(adjNode.name) || settled.contains(adjNode))
                         flag=true;
-                }
-
                         
                 if(!flag)
-                {
-                    System.out.println(adjNode.name+" has not been used");
+                {   //If not in settled go ahead and process it
+                    adjNode.distance+=dist+eval.distance;
                     calcMinDist(eval, dist, adjNode);
                     //iterator help from https://www.geeksforgeeks.org/traverse-through-a-hashset-in-java/
                     Iterator <node>  i= unsettled.iterator();
                     node del=null;
                     while(i.hasNext())
-                    {
+                    {   //see if we need to remove a node from unsettled
                         node nod = i.next();
                         if(nod.name.equals(adjNode.name))
                             del = nod;
                     }
-                    adjNode.distance+=dist;
-                    adjNode.predecessor=eval.name;
+                    if(adjNode.predecessor==null)
+                        adjNode.predecessor=eval.name;
                 
                     if(del!=null)
-                    {
+                    {   //if we do then set the original nodes info to its replacement
                         adjNode.adjacentTo = del.adjacentTo;
                         adjNode.path = del.path;
                         unsettled.remove(del);
                     }
                     unsettled.add(adjNode);
-                    System.out.println("Pushed "+adjNode.name+" to unsettled");
                 }
-                else
-                    System.out.println(adjNode.name+" has been used");
-                
                 flag=false;
             }
             settled.add(eval);
-                System.out.println("vetted "+eval.name+"-"+eval.distance);
-            System.out.println("Remaining: -----------------------------------");
-            for(node nod: unsettled)
-                System.out.print(nod.name+"-"+nod.distance+", ");
-            System.out.println("\nSettled: -------------------------------------");
-            for(node nod: settled)
-                System.out.print(nod.name+"-"+nod.distance+"-"+nod.predecessor+", ");
-            System.out.println("\n----------------------------------------------");
         }
-
+        //settle the information gleaned from the algo into the matrix
         node[] lists = settled.toArray(new node[settled.size()]);
         int ind=0;
         for(int m = 0; m<no.length; m++)
@@ -368,23 +347,19 @@ public class Router
                     matrix[ind][k]=lists[j].predecessor+","+lists[j].distance;
             }
         }
-    
-        //Arrays.sort(outp);
     }
-
 
     public static node getClosest(Set<node> unsettled)
     {
         node closestNode=null;
         int minDist = 99999;
         for(node no: unsettled)
-        {
+        {   //search through all nodes to see which has lowest cost
             int dist = no.distance;
             if(dist<=minDist)
             {
                 minDist=dist;
                 closestNode=no;
-                System.out.println("So far, closest is "+closestNode.name+"-"+closestNode.distance);
             }
         }   
         return closestNode;
@@ -392,23 +367,19 @@ public class Router
 
     public static void calcMinDist(node eval, int dist, node source)
     {        
-        System.out.println("Calc min dist between "+eval.name+" and "+source.name);
         int sourceDist=source.distance;
-        System.out.println(source.name+"'s distance is "+dist);
-        System.out.println(sourceDist+"+"+dist+" versus "+eval.distance);
         if(sourceDist+dist<=eval.distance||eval.distance==0)
-        {
-            eval.distance=sourceDist+dist;
+        {   //if the cost is really lower, go ahead and process
+            sourceDist=eval.distance+dist;
             LinkedList<node> smallestPath = new LinkedList<node>(source.path);
             smallestPath.add(source);
             eval.path=smallestPath;
-        System.out.println("distance between "+eval.name+" and "+source.name+" is "+eval.distance);
         } 
     }
 }
 
 class node
-{
+{   //node helper class to keep information straight
     LinkedList<node> path = new LinkedList<node>();
     int distance;
     String predecessor;
