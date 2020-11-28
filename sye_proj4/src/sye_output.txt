@@ -1,8 +1,8 @@
   	A 	Band 	Beta 	C 	D 	Echo 	
 ------------------------------------------------------------------
- A	|- 	C,7 	A,1 	D,4 	A,2 	C,6 	
- Band	|Beta,8	- 	C,7 	Band,3	A,10 	C,5 	
- Beta	|Beta,1	C,8 	- 	D,5 	A,3 	C,7 	
- C	|Beta,5	C,3 	C,4 	- 	C,2 	D,9 	
- D	|D,2 	C,5 	C,6 	D,2 	- 	C,4 	
- Echo	|D,6 	C,5 	A,7 	Echo,2	C,4 	- 	
+ A	|- 	C,7 	Beta,1	D,4 	D,2 	C,6 	
+ Band	|Beta,8	- 	C,7 	C,3 	A,10 	C,5 	
+ Beta	|A,1 	C,8 	- 	D,5 	A,3 	C,7 	
+ C	|Beta,5	Band,3	Beta,4	- 	D,2 	D,9 	
+ D	|A,2 	C,5 	C,6 	C,2 	- 	C,4 	
+ Echo	|D,6 	C,5 	A,7 	C,2 	C,4 	- 	

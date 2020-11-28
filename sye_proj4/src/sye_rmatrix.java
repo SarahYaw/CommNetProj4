@@ -319,7 +319,10 @@ public class sye_rmatrix
                             del = nod;
                     }
                     if(adjNode.predecessor==null)
-                        adjNode.predecessor=eval.name;
+                        if(eval.name.equals(startNode))
+                            adjNode.predecessor=adjNode.name;
+                        else
+                            adjNode.predecessor=eval.name;
                 
                     if(del!=null)
                     {   //if we do then set the original nodes info to its replacement
